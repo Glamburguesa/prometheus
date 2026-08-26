@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prometheus — Departamento de Investigación Aplicada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0C;
+    --bg-card:#141318;
+    --bg-card-hover:#19181f;
+    --ink:#F5F3EE;
+    --ink-dim:#9B98A6;
+    --hair:#26252d;
+
+    --navy:#1B3A66;
+    --sky:#4C86C4;
+    --teal:#5FD1C4;
+    --pink:#F2578E;
+    --purple:#8C5FD1;
+    --green:#34C77B;
+    --lime:#C6F23D;
+    --orange:#E4622F;
+
+    --radius:20px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .display{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.02em;
+  }
+
+  a{color:inherit;}
+
+  ::selection{background:var(--lime); color:#0A0A0C;}
+
+  :focus-visible{
+    outline:2px solid var(--lime);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- background texture ---------- */
+  .noise-bg{
+    position:fixed; inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.045) 1px, transparent 0);
+    background-size:26px 26px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative;
+    padding:88px 0 64px;
+    text-align:center;
+    border-bottom:1px solid var(--hair);
+    overflow:hidden;
+  }
+
+  .glow{
+    position:absolute;
+    width:640px; height:640px;
+    border-radius:50%;
+    top:-360px; left:50%;
+    transform:translateX(-50%);
+    background:radial-gradient(circle, rgba(76,134,196,0.20), transparent 70%);
+    pointer-events:none;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    border:1px solid var(--hair);
+    border-radius:999px;
+    padding:7px 16px;
+    margin-bottom:28px;
+  }
+
+  .wordmark{
+    font-size:clamp(56px, 12vw, 118px);
+    font-weight:700;
+    line-height:0.95;
+    margin-bottom:22px;
+  }
+
+  .tagline{
+    max-width:620px;
+    margin:0 auto 48px;
+    font-size:17px;
+    color:#D9D7E0;
+  }
+  .tagline strong{color:var(--ink); font-weight:600;}
+
+  /* icon row */
+  .icon-row{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+    list-style:none;
+  }
+  .icon-row li{display:flex;}
+  .icon-row a{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:var(--ink-dim);
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    transition:color .2s ease, transform .2s ease;
+  }
+  .icon-row a:hover{color:var(--ink); transform:translateY(-3px);}
+  .badge{
+    width:64px; height:64px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px -8px rgba(0,0,0,0.6);
+    flex-shrink:0;
+  }
+  .badge svg{width:60%; height:60%;}
+
+  /* ---------- STAT STRIP ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    border-bottom:1px solid var(--hair);
+  }
+  .stat{
+    padding:30px 20px;
+    text-align:center;
+    border-left:1px solid var(--hair);
+  }
+  .stat:first-child{border-left:none;}
+  .stat .num{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(26px,4vw,36px);
+    font-weight:700;
+  }
+  .stat .lbl{
+    font-size:12px;
+    color:var(--ink-dim);
+    margin-top:4px;
+  }
+
+  /* ---------- PROJECTS ---------- */
+  .projects{padding:80px 0 40px;}
+
+  .section-head{
+    text-align:center;
+    margin-bottom:56px;
+  }
+  .section-head h2{
+    font-size:clamp(28px,4vw,38px);
+    font-weight:700;
+  }
+  .section-head p{
+    color:var(--ink-dim);
+    max-width:520px;
+    margin:12px auto 0;
+    font-size:15px;
+  }
+
+  .project{
+    position:relative;
+    background:var(--bg-card);
+    border:1px solid var(--hair);
+    border-radius:var(--radius);
+    padding:40px;
+    margin-bottom:24px;
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:32px;
+    scroll-margin-top:24px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .6s ease, transform .6s ease, border-color .25s ease;
+  }
+  .project.in{opacity:1; transform:translateY(0);}
+  .project:hover{border-color:var(--hair-hover, #34323c);}
+
+  .project .badge{width:88px; height:88px;}
+
+  .project-code{
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  .project h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(20px,2.6vw,26px);
+    font-weight:700;
+    margin-bottom:14px;
+    line-height:1.2;
+  }
+
+  .project p.summary{
+    color:#D2D0DA;
+    font-size:15px;
+    margin-bottom:20px;
+  }
+
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:24px;
+    margin-bottom:22px;
+    padding-bottom:22px;
+    border-bottom:1px dashed var(--hair);
+  }
+  .meta-row div{font-size:13px;}
+  .meta-row span{
+    display:block;
+    color:var(--ink-dim);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:3px;
+  }
+
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .chip{
+    font-size:12.5px;
+    padding:7px 13px;
+    border-radius:999px;
+    background:#1D1C22;
+    border:1px solid var(--hair);
+    color:#D2D0DA;
+  }
+
+  .next{
+    font-size:13.5px;
+    color:var(--ink-dim);
+  }
+  .next strong{color:var(--ink); font-weight:600;}
+
+  @media (max-width:640px){
+    .project{grid-template-columns:1fr; padding:28px 22px;}
+    .project .badge{width:60px; height:60px;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(3){border-left:none;}
+  }
+
+  /* ---------- CLOSING / CTA ---------- */
+  .cta{
+    text-align:center;
+    padding:80px 0 100px;
+    border-top:1px solid var(--hair);
+  }
+  .cta h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:clamp(26px,4vw,34px);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+  .cta p{
+    color:var(--ink-dim);
+    max-width:480px;
+    margin:0 auto 40px;
+    font-size:15px;
+  }
+  .cta-row{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .cta-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 24px;
+    border-radius:999px;
+    border:1px solid var(--hair);
+    background:var(--bg-card);
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    color:var(--ink);
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .cta-btn:hover{transform:translateY(-2px); border-color:#3d3b46;}
+  .cta-btn .dot{
+    width:9px; height:9px; border-radius:50%;
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 0 40px;
+    font-size:12px;
+    color:#68656f;
+    border-top:1px solid var(--hair);
+  }
+</style>
+</head>
+<body>
+
+<div class="noise-bg"></div>
+
+<header class="hero">
+  <div class="glow"></div>
+  <div class="wrap">
+    <span class="eyebrow">Prometheus Research Department · Youth Science</span>
+    <h1 class="wordmark display">PROMETHEUS</h1>
+    <p class="tagline">
+      Somos <strong>Prometheus</strong>, el departamento de investigación aplicada del grupo estudiantil Youth Science.
+      Realizamos <strong>proyectos de investigación experimental</strong> en biotecnología, nanotecnología, física teórica y ciencia de datos.
+    </p>
+
+    <ul class="icon-row">
+      <li><a href="#micorremediacion">
+        <span class="badge" style="background:var(--green)">
+          <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.4" stroke-linecap="round"><path d="M13 6c0 8 14 6 14 14s-14 6-14 14M27 6c0 8-14 6-14 14s14 6 14 14"/><path d="M14.3 11h11.4M14.3 29h11.4M13 20h14"/></svg>
+        </span>
+        Nephthys
+      </a></li>
+      <li><a href="#cerberus">
+        <span class="badge" style="background:var(--orange)">
+          <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.4"><circle cx="20" cy="20" r="3" fill="#0A0A0C" stroke="none"/><ellipse cx="20" cy="20" rx="16" ry="6.5"/><ellipse cx="20" cy="20" rx="16" ry="6.5" transform="rotate(60 20 20)"/><ellipse cx="20" cy="20" rx="16" ry="6.5" transform="rotate(120 20 20)"/></svg>
+        </span>
+        Cerberus
+      </a></li>
+      <li><a href="#nephthys">
+        <span class="badge" style="background:var(--lime)">
+          <svg viewBox="0 0 40 40"><g fill="#0A0A0C"><circle cx="10" cy="10" r="2.1"/><circle cx="19" cy="10" r="2.1"/><circle cx="28" cy="10" r="2.1"/><circle cx="10" cy="19" r="2.1"/><circle cx="19" cy="19" r="2.1"/><circle cx="28" cy="19" r="2.1"/><circle cx="10" cy="28" r="2.1"/><circle cx="19" cy="28" r="2.1"/><circle cx="28" cy="28" r="2.1"/></g></svg>
+        </span>
+        Nephthys
+      </a></li>
+      <li><a href="#hyperion">
+        <span class="badge" style="background:var(--sky)">
+          <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.4" stroke-linecap="round"><path d="M20 20c0-3 2.5-5 5-5s5 2 5 5-2.5 5.5-6 5.5-8-2.8-8-8 3.6-9.5 9-9.5 11 4.3 11 11-5 12.5-13.5 12.5"/></svg>
+        </span>
+        Hyperion
+      </a></li>
+      <li><a href="#sistemacancol">
+        <span class="badge" style="background:var(--teal)">
+          <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22h6l3-9 4 16 3-11 2.5 4H34"/></svg>
+        </span>
+        Nephthys
+      </a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="projects wrap">
+  <div class="section-head">
+    <h2 class="display">Nuestros proyectos actuales</h2>
+    <p>Cinco líneas de investigación experimental en distintas etapas de diseño, revisión bibliográfica y validación.</p>
+  </div>
+
+  <!-- PROJECT 1 -->
+  <article class="project" id="micorremediacion">
+    <span class="badge" style="background:var(--green)">
+      <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.2" stroke-linecap="round"><path d="M13 6c0 8 14 6 14 14s-14 6-14 14M27 6c0 8-14 6-14 14s14 6 14 14"/><path d="M14.3 11h11.4M14.3 29h11.4M13 20h14"/></svg>
+    </span>
+    <div>
+      <div class="project-code" style="color:var(--green)">Nephthys</div>
+      <h3>Estrategias de micorremediación para la recuperación de suelos contaminados</h3>
+      <p class="summary">Uso de hongos degradadores (<em>Pleurotus ostreatus</em> y <em>Trametes versicolor</em>) para degradar plaguicidas persistentes en suelo, con énfasis en el DDT y sus subproductos.</p>
+      <div class="chips">
+        <span class="chip">Hongos ligninolíticos seleccionados</span>
+        <span class="chip">Zona de muestreo definida</span>
+        <span class="chip">Revisión bibliográfica DDT</span>
+      </div>
+      <p class="next"><strong>Siguiente mes:</strong> caracterización del sitio de muestreo y gestión de permisos para extracción de suelo.</p>
+    </div>
+  </article>
+
+  <!-- PROJECT 2 -->
+  <article class="project" id="cerberus">
+    <span class="badge" style="background:var(--orange)">
+      <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.2"><circle cx="20" cy="20" r="3" fill="#0A0A0C" stroke="none"/><ellipse cx="20" cy="20" rx="16" ry="6.5"/><ellipse cx="20" cy="20" rx="16" ry="6.5" transform="rotate(60 20 20)"/><ellipse cx="20" cy="20" rx="16" ry="6.5" transform="rotate(120 20 20)"/></svg>
+    </span>
+    <div>
+      <div class="project-code" style="color:var(--orange)">Cerberus</div>
+      <h3>Nanopartículas magnéticas con corona proteica para hipertermia dirigida en tumores</h3>
+      <p class="summary">Funcionalización de nanopartículas de óxido de hierro (Fe₃O₄) con BSA o dextrano para lograr una corona proteica definida y mejorar la hipertermia magnética tumoral.</p>
+      <div class="chips">
+        <span class="chip">BSA vs. Dextrano en paralelo</span>
+        <span class="chip">Acceso a DLS / Potencial Zeta</span>
+        <span class="chip">Precursores aprobados</span>
+      </div>
+      <p class="next"><strong>Siguiente mes:</strong> síntesis reproducible por coprecipitación e hidrotermal, asegurando superparamagnetismo óptimo.</p>
+    </div>
+  </article>
+
+  <!-- PROJECT 3 -->
+  <article class="project" id="nephthys">
+    <span class="badge" style="background:var(--lime)">
+      <svg viewBox="0 0 40 40"><g fill="#0A0A0C"><circle cx="10" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><circle cx="28" cy="10" r="2"/><circle cx="10" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="28" cy="19" r="2"/><circle cx="10" cy="28" r="2"/><circle cx="19" cy="28" r="2"/><circle cx="28" cy="28" r="2"/></g></svg>
+    </span>
+    <div>
+      <div class="project-code" style="color:var(--lime)">Nephthys</div>
+      <h3>Productos innovadores en lácteos a base de papa</h3>
+      <p class="summary">Rediseño del proyecto "Paqueso" hacia un queso vegano a base de papa, evaluando perfil nutricional, aceptación sensorial y viabilidad de mercado en Nuevo León y Sinaloa.</p>
+      <div class="chips">
+        <span class="chip">94.3% aceptación sensorial</span>
+        <span class="chip">Muestra 2 seleccionada</span>
+        <span class="chip">Sin aditivos lácteos</span>
+      </div>
+      <p class="next"><strong>Siguiente mes:</strong> validación nutricional en laboratorio y pruebas sensoriales con población vegana e intolerante a la lactosa.</p>
+    </div>
+  </article>
+
+  <!-- PROJECT 4 -->
+  <article class="project" id="hyperion">
+    <span class="badge" style="background:var(--sky)">
+      <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.2" stroke-linecap="round"><path d="M20 20c0-3 2.5-5 5-5s5 2 5 5-2.5 5.5-6 5.5-8-2.8-8-8 3.6-9.5 9-9.5 11 4.3 11 11-5 12.5-13.5 12.5"/></svg>
+    </span>
+    <div>
+      <div class="project-code" style="color:var(--sky)">Hyperion</div>
+      <h3>Algoritmos basados en Self-Avoiding Quantum Walks</h3>
+      <p class="summary">Estudio de caminatas cuánticas que no revisitan sitios ya visitados, con miras a nuevas capacidades algorítmicas para simulación física y química.</p>
+      <div class="chips">
+        <span class="chip">10–13 h/semana por integrante</span>
+        <span class="chip">Taller de computación cuántica</span>
+        <span class="chip">Meta: preprint científico</span>
+      </div>
+      <p class="next"><strong>Siguiente mes:</strong> definir preguntas de investigación con el asesor y seleccionar el artículo candidato para el miniproyecto numérico.</p>
+    </div>
+  </article>
+
+  <!-- PROJECT 5 -->
+  <article class="project" id="sistemacancol">
+    <span class="badge" style="background:var(--teal)">
+      <svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22h6l3-9 4 16 3-11 2.5 4H34"/></svg>
+    </span>
+    <div>
+      <div class="project-code" style="color:var(--teal)">Nephthys</div>
+      <h3>Plataforma microfluídica para detección de ADN tumoral circulante en cáncer colorrectal</h3>
+      <p class="summary">Sistema <em>lab-on-chip</em> que integra separación inercial en espiral, captura con nanopartículas magnéticas y cuantificación fluorométrica para detectar ctDNA sin amplificación enzimática.</p>
+      <div class="chips">
+        <span class="chip">Arquitectura de 4 etapas definida</span>
+        <span class="chip">Geometría de espiral en AutoCAD</span>
+        <span class="chip">2 prototipos propuestos</span>
+      </div>
+      <p class="next"><strong>Siguiente mes:</strong> simulación CFD en COMSOL para decidir el prototipo que avanza a fabricación.</p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  Prometheus Research Department — Youth Science · Tecnológico de Monterrey
+</footer>
+
+<script>
+  const items = document.querySelectorAll('.project');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  items.forEach(el=>io.observe(el));
+
+  // Respect reduced motion
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    items.forEach(el=>el.classList.add('in'));
+  }
+</script>
+
+</body>
+</html>
